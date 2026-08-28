@@ -50,9 +50,9 @@ So attribution is not a feature of a triage system. It is a **precondition** for
 
 Once you can attribute packages to applications, the numbers move in a counterintuitive way.
 
-**The problem first gets worse.** 100 vendor reports join against the inventory and become roughly 900 distinct (application × package × vulnerability) tuples, because one vulnerable package is consumed by many applications.
+**The problem first gets worse.** 412 vendor reports join against the inventory and become roughly 3,847 distinct (application × package × vulnerability) tuples, because one vulnerable package is consumed by many applications.
 
-**Then it gets much better.** Those 900 tuples collapse to about 22 distinct vulnerabilities, because every Java service in an estate pulls the same Jackson, Spring, and Netty stack. The same CVE arrives many times over.
+**Then it gets much better.** Those 3,847 tuples collapse to about 63 distinct vulnerabilities, because every Java service in an estate pulls the same Jackson, Spring, and Netty stack. The same CVE arrives dozens of times.
 
 The architectural consequence is the core idea in the whole design: **split the judgment into a universal half and a local half.**
 
@@ -60,7 +60,7 @@ A **Vulnerability Profile** captures everything true about a CVE regardless of w
 
 An **Application Assessment** then applies that profile to one consuming application. Is the package in the shipped artifact? What scope? Does the vulnerable symbol exist in the packaged version? Are the entry points referenced? Do the preconditions hold here? That work is largely a database join and an artifact inspection.
 
-The result is that **expensive reasoning scales with the number of distinct vulnerabilities, not with report volume or application count.** In week one the profile cache is empty and everything is work. By week eight, better than four in five arriving CVEs already have a profile and replay for free. The system gets cheaper the longer it runs.
+The result is that **expensive reasoning scales with the number of distinct vulnerabilities, not with report volume or application count.** In week one the profile cache is empty and everything is work. By week eight, most arriving CVEs already have a profile and replay for free. The system gets cheaper the longer it runs.
 
 ---
 
@@ -110,9 +110,9 @@ The ledger is append-only. Statements are superseded, never edited, which means 
 
 ## The unit of work for a developer is a bump, not a ticket
 
-The remediation view groups findings by **fix action** rather than by finding, and the difference is the whole point. In the prototype, 571 open findings resolve to eight distinct actions, and the top three close 81% of them.
+The remediation view groups findings by **fix action** rather than by finding, and the difference is the whole point. In the prototype, 2,284 open findings resolve to eight distinct actions, and the top three close roughly 80% of them.
 
-Nobody can act on 571 individual tickets. "Bump the Spring Boot parent and the gRPC shading parent" is a sprint commitment somebody can say yes to.
+Nobody can act on 2,284 tickets. "Bump the Spring Boot parent and the gRPC shading parent" is a sprint commitment somebody can say yes to.
 
 The view also makes the patching trade-off explicit, because it is real and people get it wrong in both directions. Two campaigns in the prototype resolve the same lodash vulnerability. One forces a transitive override — fast, but it runs a dependency combination the parent library never tested, so it requires a test gate and an expiry date. The other upgrades the parent entirely — durable, but two to three sprints. Bumping the direct parent is almost always the right first answer; an override is a loan you have to pay back.
 
@@ -124,7 +124,7 @@ And one campaign has no fix at all. An unmaintained internal library, no release
 
 Development teams need throughput, backlog aging, false-positive rate by tool, and mean time to remediate. Leadership needs an exposure trend line and an answer about the vulnerabilities attackers are actually using.
 
-These are not the same slide, and collapsing them is a common failure. The executive view in the prototype deliberately shows no finding counts at all. Nobody in a boardroom wants to know there are several hundred open findings. They want to know whether exposure is falling and whether KEV-listed exposure is closed.
+These are not the same slide, and collapsing them is a common failure. The executive view in the prototype deliberately shows no finding counts at all. Nobody in a boardroom wants to know there are eleven thousand findings. They want to know whether exposure is falling and whether KEV-listed exposure is closed.
 
 One internal metric is worth calling out separately: **false-positive rate by vendor batch.** If a large share of a vendor's weekly output is not applicable or references packages nobody consumes, that is not a triage problem. That is a contract conversation, and quantifying it is leverage.
 

@@ -150,35 +150,35 @@ const ASSESSMENTS = [
 const STAGES = [
   { key:"ingest",  name:"Ingest",       icon:Database, det:true,
     detail:"Parse vendor exports through format adapters. SARIF, CycloneDX VDR, OSV, and a configurable CSV mapper.",
-    inLabel:"vendor reports", outLabel:"normalized findings", inN:412, outN:412,
+    inLabel:"vendor reports", outLabel:"normalized findings", inN:100, outN:100,
     explain:"No vendor format survives past this boundary. When the third party changes their export, you write one adapter and nothing downstream moves." },
   { key:"attrib",  name:"Attribution",  icon:Boxes, det:true,
     detail:"Join each package against the inventory to find every consuming application.",
-    inLabel:"normalized findings", outLabel:"app × package × CVE", inN:412, outN:3847,
+    inLabel:"normalized findings", outLabel:"app × package × CVE", inN:100, outN:900,
     explain:"This is the step the vendor cannot do for you. It is also where the count explodes — one package report becomes one finding per consuming application." },
   { key:"collapse",name:"Collapse",     icon:Layers, det:true,
     detail:"Group tuples by (package, CVE) to find how many distinct judgments are actually required.",
-    inLabel:"app × package × CVE", outLabel:"distinct CVEs", inN:3847, outN:63,
-    explain:"The thesis of the whole system. 3,847 things to decide is impossible. 63 is a Tuesday." },
+    inLabel:"app × package × CVE", outLabel:"distinct CVEs", inN:900, outN:22,
+    explain:"The thesis of the whole system. 900 things to decide is impossible. 22 is a Tuesday." },
   { key:"profile", name:"Profile",      icon:Cpu, det:false,
     detail:"Build a Vulnerability Profile per CVE: vulnerable symbols, the entry points that reach them, exploit preconditions, and fix paths.",
-    inLabel:"distinct CVEs", outLabel:"model calls needed", inN:63, outN:12,
-    explain:"51 of the 63 were already profiled in earlier weeks and replay for free. Expensive reasoning scales with distinct CVEs, never with report volume — so this number falls every month." },
+    inLabel:"distinct CVEs", outLabel:"model calls needed", inN:22, outN:4,
+    explain:"18 of the 22 were already profiled in earlier weeks and replay for free. Expensive reasoning scales with distinct CVEs, never with report volume — so this number falls every month." },
   { key:"assess",  name:"Assess",       icon:ShieldAlert, det:true,
     detail:"Apply each profile to each consuming application. Artifact presence, scope, symbol presence, entry-point references, preconditions.",
-    inLabel:"app × package × CVE", outLabel:"assessments", inN:3847, outN:3847,
+    inLabel:"app × package × CVE", outLabel:"assessments", inN:900, outN:900,
     explain:"Mostly a database join and an artifact inspection. The model only weighs in on whether preconditions are met, and it must cite." },
   { key:"guard",   name:"Guardrails",   icon:Lock, det:true,
     detail:"Reject proposals with no citation, bound severity movement, strip unsupported quotes, enforce the dismissal floor.",
-    inLabel:"assessments", outLabel:"passed", inN:3847, outN:3610,
-    explain:"237 proposals failed a guardrail and routed to human review rather than being dropped or auto-committed." },
+    inLabel:"assessments", outLabel:"passed", inN:900, outN:845,
+    explain:"55 proposals failed a guardrail and routed to human review rather than being dropped or auto-committed." },
   { key:"commit",  name:"Disposition",  icon:ClipboardCheck, det:true,
     detail:"Write dispositions and cache entries. Escalate anything under the confidence threshold or touching a KEV entry.",
-    inLabel:"passed", outLabel:"auto-dispositioned", inN:3847, outN:3610,
+    inLabel:"passed", outLabel:"auto-dispositioned", inN:845, outN:845,
     explain:"The model proposed all of these. Deterministic code committed them. That distinction is the entire audit story." },
   { key:"vex",     name:"VEX",          icon:FileSignature, det:true,
     detail:"Emit an OpenVEX statement per application per vulnerability. Append-only ledger, supersession never mutation.",
-    inLabel:"auto-dispositioned", outLabel:"statements", inN:3610, outN:3610,
+    inLabel:"auto-dispositioned", outLabel:"statements", inN:845, outN:845,
     explain:"This is why the same CVE never gets triaged twice. The decision becomes a durable, machine-readable artifact." },
 ];
 
@@ -193,10 +193,10 @@ const LADDER = [
 ];
 
 const TREND = [
-  { w:"Wk 1", exposure:1840, kev:112 }, { w:"Wk 2", exposure:1712, kev:98 },
-  { w:"Wk 3", exposure:1495, kev:81 },  { w:"Wk 4", exposure:1268, kev:54 },
-  { w:"Wk 5", exposure:1042, kev:37 },  { w:"Wk 6", exposure:864,  kev:22 },
-  { w:"Wk 7", exposure:701,  kev:14 },  { w:"Wk 8", exposure:588,  kev:9 },
+  { w:"Wk 1", exposure:460, kev:28 }, { w:"Wk 2", exposure:428, kev:25 },
+  { w:"Wk 3", exposure:374, kev:20 }, { w:"Wk 4", exposure:317, kev:14 },
+  { w:"Wk 5", exposure:261, kev:9 },  { w:"Wk 6", exposure:216, kev:6 },
+  { w:"Wk 7", exposure:175, kev:4 },  { w:"Wk 8", exposure:147, kev:2 },
 ];
 
 /* remediation campaigns — grouped by fix ACTION, not by finding */
@@ -204,7 +204,7 @@ const CAMPAIGNS = [
   {
     id: "RC-01", eco: "maven", kind: "parent_bump",
     action: "spring-boot-starter-parent", from: "2.5.6", to: "2.7.18",
-    closes: 1240, kev: 3, apps: ["APP-1041","APP-2270","APP-3315","APP-4408","APP-6620"],
+    closes: 310, kev: 3, apps: ["APP-1041","APP-2270","APP-3315","APP-4408","APP-6620"],
     cves: ["CVE-2021-44228","CVE-2020-36518","CVE-2022-22965"],
     effort: "medium", risk: "medium", eta: "1 sprint",
     why: "One managed-parent bump resolves log4j-core, jackson-databind, and spring-beans in a single change. The parent's BOM already pins fixed versions of all three.",
@@ -213,7 +213,7 @@ const CAMPAIGNS = [
   {
     id: "RC-02", eco: "maven", kind: "parent_bump",
     action: "grpc-netty-shaded", from: "1.45.0", to: "1.58.0",
-    closes: 388, kev: 1, apps: ["APP-1041","APP-6620"],
+    closes: 97, kev: 1, apps: ["APP-1041","APP-6620"],
     cves: ["CVE-2023-44487"],
     effort: "low", risk: "low", eta: "2 days",
     why: "Shaded netty is invisible to the dependency tree. The only path to a fixed netty-codec-http2 is bumping the shading parent.",
@@ -222,7 +222,7 @@ const CAMPAIGNS = [
   {
     id: "RC-03", eco: "npm", kind: "override",
     action: "lodash (forced via overrides)", from: "4.17.20", to: "4.17.21",
-    closes: 214, kev: 0, apps: ["APP-3315","APP-7734"],
+    closes: 54, kev: 0, apps: ["APP-3315","APP-7734"],
     cves: ["CVE-2021-23337"],
     effort: "low", risk: "high", eta: "1 day",
     why: "react-scripts 4.0.3 pins lodash transitively and no 4.x release moves off it. An override is the only fast path.",
@@ -231,7 +231,7 @@ const CAMPAIGNS = [
   {
     id: "RC-04", eco: "nuget", kind: "direct_bump",
     action: "Newtonsoft.Json", from: "12.0.3", to: "13.0.1",
-    closes: 96, kev: 0, apps: ["APP-4408"],
+    closes: 24, kev: 0, apps: ["APP-4408"],
     cves: ["CVE-2024-21907"],
     effort: "low", risk: "low", eta: "1 day",
     why: "Direct dependency, single major bump, well-documented migration.",
@@ -240,7 +240,7 @@ const CAMPAIGNS = [
   {
     id: "RC-05", eco: "npm", kind: "direct_bump",
     action: "axios", from: "1.5.0", to: "1.6.0",
-    closes: 41, kev: 0, apps: ["APP-3315"],
+    closes: 10, kev: 0, apps: ["APP-3315"],
     cves: ["CVE-2023-45857"],
     effort: "low", risk: "low", eta: "1 day",
     why: "Direct dependency in package.json. Patch-level behavioural change only.",
@@ -249,7 +249,7 @@ const CAMPAIGNS = [
   {
     id: "RC-06", eco: "npm", kind: "replace",
     action: "react-scripts", from: "4.0.3", to: "5.0.1",
-    closes: 214, kev: 0, apps: ["APP-3315","APP-7734"],
+    closes: 54, kev: 0, apps: ["APP-3315","APP-7734"],
     cves: ["CVE-2021-23337"],
     effort: "high", risk: "medium", eta: "2–3 sprints",
     why: "The durable fix for the same finding RC-03 patches. Moves off the pinned transitive entirely rather than forcing around it.",
@@ -258,7 +258,7 @@ const CAMPAIGNS = [
   {
     id: "RC-07", eco: "pypi", kind: "direct_bump",
     action: "requests", from: "2.28.1", to: "2.31.0",
-    closes: 33, kev: 0, apps: ["APP-8850"],
+    closes: 8, kev: 0, apps: ["APP-8850"],
     cves: ["CVE-2023-32681"],
     effort: "low", risk: "low", eta: "1 day",
     why: "Direct dependency in requirements.txt.",
@@ -267,7 +267,7 @@ const CAMPAIGNS = [
   {
     id: "RC-08", eco: "maven", kind: "no_fix",
     action: "internal-audit-commons", from: "1.4.2", to: "—",
-    closes: 58, kev: 0, apps: ["APP-5512"],
+    closes: 14, kev: 0, apps: ["APP-5512"],
     cves: ["CVE-2025-31180"],
     effort: "high", risk: "high", eta: "unscheduled",
     why: "Internal library, last commit 2021, no maintainer. No fixed version exists.",
@@ -276,18 +276,18 @@ const CAMPAIGNS = [
 ];
 
 const TEAM_ROLLUP = [
-  { team:"Payments Core",    apps:2, campaigns:["RC-01","RC-02"],        closes:1628, kev:4, tier:1 },
-  { team:"Digital Channels", apps:1, campaigns:["RC-01","RC-03","RC-05","RC-06"], closes:1495, kev:1, tier:1 },
-  { team:"Lending Tech",     apps:1, campaigns:["RC-01","RC-04"],        closes:1336, kev:1, tier:2 },
-  { team:"Risk Platform",    apps:1, campaigns:["RC-01","RC-02"],        closes:1628, kev:4, tier:1 },
-  { team:"Branch Systems",   apps:1, campaigns:["RC-03","RC-06"],        closes:214,  kev:0, tier:3 },
-  { team:"Treasury Ops",     apps:1, campaigns:["RC-07"],                closes:33,   kev:0, tier:3 },
-  { team:"Doc Services",     apps:1, campaigns:["RC-08"],                closes:58,   kev:0, tier:3 },
+  { team:"Payments Core",    apps:2, campaigns:["RC-01","RC-02"],        closes:407, kev:4, tier:1 },
+  { team:"Digital Channels", apps:1, campaigns:["RC-01","RC-03","RC-05","RC-06"], closes:374, kev:1, tier:1 },
+  { team:"Lending Tech",     apps:1, campaigns:["RC-01","RC-04"],        closes:334, kev:1, tier:2 },
+  { team:"Risk Platform",    apps:1, campaigns:["RC-01","RC-02"],        closes:407, kev:4, tier:1 },
+  { team:"Branch Systems",   apps:1, campaigns:["RC-03","RC-06"],        closes:54,  kev:0, tier:3 },
+  { team:"Treasury Ops",     apps:1, campaigns:["RC-07"],                closes:8,   kev:0, tier:3 },
+  { team:"Doc Services",     apps:1, campaigns:["RC-08"],                closes:14,  kev:0, tier:3 },
 ];
 
 const CACHE_TREND = [
   { w:"Wk 1", hit:12 }, { w:"Wk 2", hit:34 }, { w:"Wk 3", hit:51 }, { w:"Wk 4", hit:63 },
-  { w:"Wk 5", hit:71 }, { w:"Wk 6", hit:77 }, { w:"Wk 7", hit:81 }, { w:"Wk 8", hit:81 },
+  { w:"Wk 5", hit:71 }, { w:"Wk 6", hit:77 }, { w:"Wk 7", hit:81 }, { w:"Wk 8", hit:82 },
 ];
 
 /* ── tiny primitives ────────────────────────────────────────────────────── */
@@ -355,13 +355,13 @@ function Pipeline({ explain }) {
   const start = () => { setStep(-1); setRunning(true); setTimeout(() => setStep(0), 60); };
   const reset = () => { setRunning(false); setStep(-1); };
   const done = step >= STAGES.length - 1 && !running;
-  const maxN = 3847;
+  const maxN = 900;
 
   return (
     <div>
       <div className="flex items-start justify-between gap-4 flex-wrap mb-6">
         <div>
-          <SectionTitle sub="Batch VNDR-2026-W35 · 412 reports received Monday 06:00 ET">
+          <SectionTitle sub="Batch VNDR-2026-W35 · 100 reports received Monday 06:00 ET">
             Pipeline run
           </SectionTitle>
         </div>
@@ -426,9 +426,9 @@ function Pipeline({ explain }) {
           })}
         </div>
         <Explain on={explain}>
-          This shape is the argument. A reviewer looking at 412 reports a week assumes a staffing problem.
-          The widest bar says it is actually 3,847 decisions, which is worse. The narrowest bar says only 63
-          of them are distinct, and only 12 need new reasoning. That is the difference between impossible and routine.
+          This shape is the argument. A reviewer looking at 100 reports a week assumes it is survivable — 24 minutes each.
+          The widest bar says it is actually 900 decisions, which is not. The narrowest bar says only 22
+          of them are distinct, and only 4 need new reasoning. That is the difference between impossible and routine.
         </Explain>
       </div>
 
@@ -484,8 +484,8 @@ function Inventory({ explain }) {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
         {[
           { k: "Attribution coverage", v: `${pct}%`, d: `${covered} of ${APPS.length} applications resolvable`, tone: "text-amber-400" },
-          { k: "Packages in inventory", v: "3,521", d: "of 3,600 the vendor scans", tone: "text-slate-100" },
-          { k: "Unattributable reports", v: "25", d: "no known consumer — vendor contract lever", tone: "text-rose-400" },
+          { k: "Packages in inventory", v: "963", d: "of 1,000 the vendor scans", tone: "text-slate-100" },
+          { k: "Unattributable reports", v: "6", d: "no known consumer — vendor contract lever", tone: "text-rose-400" },
         ].map(c => (
           <div key={c.k} className="vx-panel rounded-lg p-4">
             <div className="text-xs uppercase tracking-wider text-slate-500 mb-2">{c.k}</div>
@@ -797,7 +797,7 @@ function Review({ explain }) {
 
   return (
     <div>
-      <SectionTitle sub={`${queued.length} assessments held for human decision — the model proposed, it did not commit`}>
+      <SectionTitle sub={`${queued.length} of 55 shown — held for human decision. The model proposed, it did not commit.`}>
         Review queue
       </SectionTitle>
 
@@ -959,7 +959,7 @@ function Metrics({ explain }) {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
             {[
               { k:"Exposure trend", v:"−68%", d:"8 weeks", tone:"text-emerald-400" },
-              { k:"KEV exposure closed", v:"92%", d:"9 of 112 remain open", tone:"text-emerald-400" },
+              { k:"KEV exposure closed", v:"93%", d:"2 of 28 remain open", tone:"text-emerald-400" },
               { k:"Tier 1 apps clear", v:"3 of 4", d:"Retail Payments API outstanding", tone:"text-amber-400" },
             ].map(c => (
               <div key={c.k} className="vx-panel rounded-lg p-4">
@@ -989,9 +989,9 @@ function Metrics({ explain }) {
         <>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
             {[
-              { k:"Collapse ratio", v:"61:1", d:"3,847 tuples → 63 decisions" },
-              { k:"Profile cache hit", v:"81%", d:"51 of 63 reused" },
-              { k:"Auto-dispositioned", v:"93.8%", d:"237 escalated" },
+              { k:"Collapse ratio", v:"41:1", d:"900 tuples → 22 decisions" },
+              { k:"Profile cache hit", v:"82%", d:"18 of 22 reused" },
+              { k:"Auto-dispositioned", v:"93.9%", d:"55 escalated" },
               { k:"Analyst min / 100", v:"14", d:"was 340 at week 1" },
             ].map(c => (
               <div key={c.k} className="vx-panel rounded-lg p-4">
@@ -1115,7 +1115,7 @@ function Remediation({ explain }) {
         {[
           { k:"Open findings", v:total.toLocaleString(), d:"across 8 applications", tone:"text-slate-100" },
           { k:"Closed by top 3 actions", v:`${Math.round((top3/total)*100)}%`, d:`${top3.toLocaleString()} findings`, tone:"text-emerald-400" },
-          { k:"Distinct actions", v:String(CAMPAIGNS.length), d:"not 2,284 tickets", tone:"text-amber-400" },
+          { k:"Distinct actions", v:String(CAMPAIGNS.length), d:"not 571 tickets", tone:"text-amber-400" },
           { k:"Blocked, no upstream fix", v:"1", d:"needs a risk decision", tone:"text-rose-400" },
         ].map(c => (
           <div key={c.k} className="vx-panel rounded-lg p-4">
@@ -1127,8 +1127,8 @@ function Remediation({ explain }) {
       </div>
 
       <Explain on={explain}>
-        This is the view that changes what you send the dev teams. Nobody can act on 2,284 findings. Three
-        version bumps closing 80% of them is a sprint commitment somebody can actually say yes to.
+        This is the view that changes what you send the dev teams. Nobody can act on 571 individual findings.
+        Three version bumps closing 81% of them is a sprint commitment somebody can actually say yes to.
       </Explain>
 
       {/* signature: leverage ranking */}
@@ -1402,7 +1402,7 @@ export default function VexillumDashboard() {
               <span className="text-slate-500">Batch</span>
               <Mono className="text-slate-300">VNDR-2026-W35</Mono>
               <span className="text-slate-700">·</span>
-              <span className="text-slate-500">3,600 packages · 8 applications</span>
+              <span className="text-slate-500">1,000 packages · 8 applications</span>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1.5 text-xs">
