@@ -11,11 +11,15 @@
 
 ## The problem this is about
 
-A large enterprise contracts a vendor to scan its open-source dependencies. The vendor scans 3,600 packages and delivers around 400 reports a week.
+A large enterprise contracts a vendor to scan its open-source dependencies. The vendor scans 1,000 packages and delivers around 100 reports a week.
 
 Somebody has to read them.
 
-Four hundred reports a week is eighty a day. An eight-hour day is 480 minutes, so that is six minutes per report at a hundred percent triage utilization — which does not exist, because the same person also owes remediation guidance to the development teams and two tiers of metrics to leadership. Realistically it is three or four minutes per report.
+A hundred reports a week is twenty a day. An eight-hour day is 480 minutes, so that is twenty-four minutes per report — tight, but survivable. That is the number that gets a headcount request denied.
+
+It is also the wrong number, because a report is not a decision.
+
+A vendor report says a package has a vulnerability. That single fact has to be resolved against every application that consumes the package, and in any real estate a popular library is consumed by many. Once those hundred reports are attributed against the inventory, they become roughly nine hundred distinct application-package-vulnerability questions, each with its own answer. That is a hundred and eighty decisions a day, or under three minutes each — before the same person writes a line of remediation guidance to the development teams or assembles two tiers of metrics for leadership.
 
 Manual triage at that rate is not slow. It is arithmetically impossible.
 
