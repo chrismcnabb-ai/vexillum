@@ -7,6 +7,8 @@
 > Every number, application, and finding in this prototype is synthetic. It is a design
 > artifact for thinking through an architecture, not a working system connected to real data.
 
+![Fan-out, then collapse — 100 reports become 900 decisions, then 22](docs/pipeline.gif)
+
 ---
 
 ## The problem this is about
