@@ -46,14 +46,14 @@ const CSS = `
 /* ── mock domain data ───────────────────────────────────────────────────── */
 
 const APPS = [
-  { id: "APP-1041", name: "Retail Payments API",    exposure: "internet-facing",     tier: 1, team: "Payments Core",   sbom: "build", pkgs: 412 },
-  { id: "APP-2270", name: "Wire Transfer Service",  exposure: "internet-facing",     tier: 1, team: "Payments Core",   sbom: "build", pkgs: 388 },
-  { id: "APP-3315", name: "Customer Portal",        exposure: "internet-facing",     tier: 1, team: "Digital Channels",sbom: "build", pkgs: 1104 },
-  { id: "APP-4408", name: "Loan Origination",       exposure: "internal-authed",     tier: 2, team: "Lending Tech",    sbom: "lockfile", pkgs: 507 },
-  { id: "APP-6620", name: "Fraud Scoring Engine",   exposure: "internal-authed",     tier: 1, team: "Risk Platform",   sbom: "build", pkgs: 291 },
-  { id: "APP-7734", name: "Branch Ops Dashboard",   exposure: "internal-authed",     tier: 3, team: "Branch Systems",  sbom: "lockfile", pkgs: 646 },
+  { id: "APP-1041", name: "Retail Payments API",    exposure: "internet-facing",     tier: 1, team: "Payments Core",   sbom: "build", pkgs: 214 },
+  { id: "APP-2270", name: "Wire Transfer Service",  exposure: "internet-facing",     tier: 1, team: "Payments Core",   sbom: "build", pkgs: 196 },
+  { id: "APP-3315", name: "Customer Portal",        exposure: "internet-facing",     tier: 1, team: "Digital Channels",sbom: "build", pkgs: 487 },
+  { id: "APP-4408", name: "Loan Origination",       exposure: "internal-authed",     tier: 2, team: "Lending Tech",    sbom: "lockfile", pkgs: 263 },
+  { id: "APP-6620", name: "Fraud Scoring Engine",   exposure: "internal-authed",     tier: 1, team: "Risk Platform",   sbom: "build", pkgs: 152 },
+  { id: "APP-7734", name: "Branch Ops Dashboard",   exposure: "internal-authed",     tier: 3, team: "Branch Systems",  sbom: "lockfile", pkgs: 318 },
   { id: "APP-5512", name: "Statement Generator",    exposure: "internal-batch",      tier: 3, team: "Doc Services",    sbom: "none",  pkgs: 0 },
-  { id: "APP-8850", name: "Nightly Recon Job",      exposure: "internal-batch",      tier: 3, team: "Treasury Ops",    sbom: "lockfile", pkgs: 173 },
+  { id: "APP-8850", name: "Nightly Recon Job",      exposure: "internal-batch",      tier: 3, team: "Treasury Ops",    sbom: "lockfile", pkgs: 91 },
 ];
 
 const PROFILES = [
